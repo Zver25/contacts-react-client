@@ -15,6 +15,14 @@ function PersonService() {
             map(parseResponse)
         );
 
+    this.deletePerson = (id) =>
+        ajax({
+            method: 'DELETE',
+            url: `${url}/${id}`
+        }).pipe(
+            map(parseResponse)
+        );
+
     this.updatePerson = (person) =>
         ajax({
             method: 'PUT',

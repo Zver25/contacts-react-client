@@ -25,7 +25,8 @@ import {Client} from "@stomp/stompjs";
 const webSocketMiddleware = (url, handlers) => (store) => {
 
     // Поднятие коннекта
-    const onConnect = () => {
+    const onConnect = (frame) => {
+        store.dispatch({type: 'WS_USERNAME', username: frame.headers['user-name']});
         // Подписываемся на получение сообщений от сервера
         handlers.receivers.forEach(receiver => {
             receiver.subscribe = stompClient.subscribe(
@@ -43,14 +44,16 @@ const webSocketMiddleware = (url, handlers) => (store) => {
         debug: console.log,
         onConnect
     });
-
     stompClient.activate();
 
     return (next) => (action) => {
         // Отправка событий на сервер
         const sender = handlers.senders.find(sender => sender.type === action.type);
         if (sender) {
-            stompClient.send(sender.destination, {}, sender.prepare(action))
+            stompClient.publish({
+                destination: sender.destination,
+                body: sender.prepare(action)
+            });
         }
         return next(action); // Не влияем на остальные события
     }

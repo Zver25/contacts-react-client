@@ -7,25 +7,15 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Pagination from '@material-ui/lab/Pagination';
 import Select from '@material-ui/core/Select';
-
-import Person from "./Person";
-import {fetchPeopleList, updatePerson} from "../store/person";
-import EditPerson from "./EditPerson";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "@material-ui/core/Button";
 
-const controlPanesStyle = {
-    background: "white",
-    width: 800,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    marginBottom: 20,
-    boxSizing: 'border-box'
-};
+import Person from "./Person";
+import {blockPerson, deletePerson, fetchPeopleList, unblockPerson, updatePerson} from "../store/person";
+import EditPerson from "./EditPerson";
+import "./PersonList.css";
 
 const PersonList = () => {
     const [isAddedNew, setAddedNew] = useState(false);
@@ -36,10 +26,17 @@ const PersonList = () => {
     const dispatch = useDispatch();
     const count = useSelector(store => store.people.count);
     const list = useSelector(store => store.people.list);
+    const username = useSelector(store => store.people.username);
+    const blockList = useSelector(store => store.people.blockList);
 
     useEffect(() => {
         dispatch(fetchPeopleList(page, perPage, query));
     }, [dispatch, page, perPage, query]);
+
+    const handleEditQuery = (event) => {
+        setQuery(event.target.value);
+        setPage(1);
+    };
 
     const handleSavePerson = (person) => {
         setAddedNew(false);
@@ -50,11 +47,28 @@ const PersonList = () => {
         setAddedNew(true);
     };
 
-    const pageCount = Math.floor(count / perPage);
+    const handleDeletePerson = (id) => {
+        dispatch(deletePerson(id));
+    };
+
+    const handleBlockPerson = (id) => {
+        dispatch(blockPerson(id));
+    };
+
+    const handleUnblockPerson = (id) => {
+        dispatch(unblockPerson(id));
+    };
+
+    const pageCount = Math.ceil(count / perPage);
+
+    const blockedPersonBy = (personId) => {
+        const blocking = blockList.find(b => b.personId === personId);
+        return (blocking && blocking.client !== username) ? blocking.client : '';
+    };
 
     return (
         <Fragment>
-            <div style={controlPanesStyle}>
+            <div className="control-panel">
                 <FormControl variant="outlined">
                     <Select value={perPage} onChange={e => setPerPage(e.target.value)}>
                         <MenuItem value={10}>10</MenuItem>
@@ -65,10 +79,10 @@ const PersonList = () => {
                 {pageCount > 1 &&
                 <Pagination count={pageCount} page={page} onChange={(_, newPage) => setPage(newPage)}/>
                 }
-                <TextField value={query} onChange={e => setQuery(e.target.value)}/>
+                <TextField value={query} onChange={handleEditQuery}/>
             </div>
             <Button variant="contained" color="primary" onClick={handleShowAddNewPerson}>Add new person</Button>
-            <div style={{background: "white", width: 800, marginTop: 20}}>
+            <div className="content-panel">
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -76,13 +90,14 @@ const PersonList = () => {
                             <TableCell>First name</TableCell>
                             <TableCell>Last name</TableCell>
                             <TableCell>E-mail</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell style={{textAlign: 'center'}}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {isAddedNew && <EditPerson onSave={handleSavePerson} onCancel={() => setAddedNew(false)}/>}
                         {list.map(person => <Person key={person.id} {...person} onChange={handleSavePerson}
-                                                    onDelete={f => f}/>)}
+                                                    onDelete={handleDeletePerson} blockedBy={blockedPersonBy(person.id)}
+                                                    onBlock={handleBlockPerson} onUnblock={handleUnblockPerson}/>)}
                     </TableBody>
                 </Table>
             </div>

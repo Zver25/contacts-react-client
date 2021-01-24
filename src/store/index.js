@@ -1,7 +1,19 @@
 import {applyMiddleware, combineReducers, createStore} from "redux";
 import {combineEpics, createEpicMiddleware} from "redux-observable";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {fetchPeopleListEpic, peopleReducer, updatePersonEpic, updatePersonReceiver, updatePersonSender} from "./person";
+import {
+    blockingListReceiver,
+    blockPersonReceiver,
+    blockPersonSender,
+    deletePersonEpic,
+    deletePersonReceiver,
+    fetchPeopleListEpic,
+    peopleReducer,
+    unblockPersonReceiver,
+    unblockPersonSender,
+    updatePersonEpic,
+    updatePersonReceiver
+} from "./person";
 import webSocketMiddleware from "./webSocketMiddleware";
 
 const rootReducers = combineReducers({
@@ -10,15 +22,21 @@ const rootReducers = combineReducers({
 
 const rootEpic = combineEpics(
     fetchPeopleListEpic,
+    deletePersonEpic,
     updatePersonEpic
 );
 
 const handlers = {
     receivers: [
-        updatePersonReceiver
+        deletePersonReceiver,
+        updatePersonReceiver,
+        blockPersonReceiver,
+        unblockPersonReceiver,
+        blockingListReceiver
     ],
     senders: [
-        // updatePersonSender
+        blockPersonSender,
+        unblockPersonSender
     ]
 };
 

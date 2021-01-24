@@ -1,0 +1,32 @@
+.control-panel {
+    background: white;
+    width: 800px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.content-panel {
+    background: white;
+    width: 800px;
+    margin-top: 20px;
+}
+
+.person-row {
+    position: relative;
+}
+
+.person-block {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, .4);
+}
