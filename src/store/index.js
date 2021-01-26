@@ -15,9 +15,11 @@ import {
     updatePersonReceiver
 } from "./person";
 import webSocketMiddleware from "./webSocketMiddleware";
+import {sessionReducer} from "./session";
 
 const rootReducers = combineReducers({
-    people: peopleReducer
+    people: peopleReducer,
+    session: sessionReducer
 });
 
 const rootEpic = combineEpics(

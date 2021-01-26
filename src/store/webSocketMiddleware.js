@@ -1,4 +1,5 @@
 import {Client} from "@stomp/stompjs";
+import {setUsername} from "./session";
 
 /**
  * handlers: Array<Header>
@@ -26,7 +27,7 @@ const webSocketMiddleware = (url, handlers) => (store) => {
 
     // Поднятие коннекта
     const onConnect = (frame) => {
-        store.dispatch({type: 'WS_USERNAME', username: frame.headers['user-name']});
+        store.dispatch(setUsername(frame.headers['user-name']))
         // Подписываемся на получение сообщений от сервера
         handlers.receivers.forEach(receiver => {
             receiver.subscribe = stompClient.subscribe(

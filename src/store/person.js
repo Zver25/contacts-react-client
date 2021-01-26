@@ -173,12 +173,6 @@ export const peopleReducer = (state = initialState, action) => {
                 ...state,
                 blockList: action.list
             };
-        // @todo: Crutch! Refactor this
-        case 'WS_USERNAME':
-            return {
-                ...state,
-                username: action.username
-            };
         default:
             return state;
     }
