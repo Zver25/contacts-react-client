@@ -26,7 +26,7 @@ const PersonList = () => {
     const dispatch = useDispatch();
     const count = useSelector(store => store.people.count);
     const list = useSelector(store => store.people.list);
-    const username = useSelector(store => store.people.username);
+    const username = useSelector(store => store.session.username);
     const blockList = useSelector(store => store.people.blockList);
 
     useEffect(() => {
@@ -38,8 +38,13 @@ const PersonList = () => {
         setPage(1);
     };
 
-    const handleSavePerson = (person) => {
+    const handleCreatePerson = (person) => {
         setAddedNew(false);
+        dispatch(updatePerson(person));
+    };
+
+    const handleUpdatePerson = (person) => {
+        handleUnblockPerson(person.id);
         dispatch(updatePerson(person));
     };
 
@@ -64,6 +69,11 @@ const PersonList = () => {
     const blockedPersonBy = (personId) => {
         const blocking = blockList.find(b => b.personId === personId);
         return (blocking && blocking.client !== username) ? blocking.client : '';
+    };
+
+    const isEdit = (personId) => {
+        const blocking = blockList.find(b => b.personId === personId);
+        return blocking && blocking.client === username;
     };
 
     return (
@@ -94,10 +104,20 @@ const PersonList = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {isAddedNew && <EditPerson onSave={handleSavePerson} onCancel={() => setAddedNew(false)}/>}
-                        {list.map(person => <Person key={person.id} {...person} onChange={handleSavePerson}
-                                                    onDelete={handleDeletePerson} blockedBy={blockedPersonBy(person.id)}
-                                                    onBlock={handleBlockPerson} onUnblock={handleUnblockPerson}/>)}
+                        {isAddedNew && <EditPerson onSave={handleCreatePerson} onCancel={() => setAddedNew(false)}/>}
+                        {list.map(person => isEdit(person.id)
+                            ? <EditPerson
+                                key={person.id}
+                                {...person}
+                                onSave={handleUpdatePerson}
+                                onCancel={() => handleUnblockPerson(person.id)}/>
+                            : <Person
+                                key={person.id}
+                                {...person}
+                                onDelete={handleDeletePerson}
+                                blockedBy={blockedPersonBy(person.id)}
+                                onBlock={handleBlockPerson}/>
+                        )}
                     </TableBody>
                 </Table>
             </div>
