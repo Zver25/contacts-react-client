@@ -108,7 +108,7 @@ export const blockingListReceiver = {
     destination: '/topic/people/blockingList',
     parse: response => {
         const body = JSON.parse(response.body);
-        console.log(body);
+        return receiveBlockingList(body);
     }
 }
 
