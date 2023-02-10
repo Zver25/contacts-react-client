@@ -4,11 +4,12 @@ import Person from "../../models/Person";
 import {
   blockedPerson,
   deletePersonSuccess,
-  fetchPeopleList,
-  fetchPeopleSuccess, receiveBlockedList,
-  receiveUpdatePerson, unblockedPerson,
+  fetchPeopleSuccess,
+  receiveBlockedList,
+  receiveUpdatePerson,
+  unblockedPerson,
 } from "./actions";
-import { FetchPeopleListEvent, FetchPeopleListSuccessEvent, PeopleState, stateName } from "./types";
+import { FetchPeopleListSuccessEvent, PeopleState, stateName } from "./types";
 
 const initialState: PeopleState = {
   page: 1,
