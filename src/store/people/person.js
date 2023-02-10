@@ -1,7 +1,7 @@
 import {ofType} from "redux-observable";
 import {concatMap, map, switchMap} from "rxjs/operators";
 
-import peopleService from "../services/PersonService";
+import peopleService from "../../services/PersonService";
 
 const REQUEST_FAILURE = 'REQUEST_FAILURE';
 const FETCH_PEOPLE = 'FETCH_PEOPLE';

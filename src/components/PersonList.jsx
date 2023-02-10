@@ -11,11 +11,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "@material-ui/core/Button";
-
 import Person from "./Person";
-import {blockPerson, deletePerson, fetchPeopleList, unblockPerson, updatePerson} from "../store/person";
 import EditPerson from "./EditPerson";
 import "./PersonList.css";
+import {blockPerson, deletePerson, fetchPeopleList, unblockPerson, updatePerson} from "../store/people/actions";
 
 const PersonList = () => {
     const [isAddedNew, setAddedNew] = useState(false);
@@ -30,7 +29,11 @@ const PersonList = () => {
     const blockList = useSelector(store => store.people.blockList);
 
     useEffect(() => {
-        dispatch(fetchPeopleList(page, perPage, query));
+        dispatch(fetchPeopleList({
+            page,
+            perPage,
+            query,
+        }));
     }, [dispatch, page, perPage, query]);
 
     const handleEditQuery = (event) => {
