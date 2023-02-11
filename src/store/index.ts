@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { combineEpics, createEpicMiddleware } from "redux-observable";
-import { deletePersonEpic, fetchPeopleListEpic, updatePersonEpic } from "./people/epics";
 import {
   blockingListReceiver,
   blockPersonReceiver,
@@ -9,7 +8,8 @@ import {
   unblockPersonReceiver,
   unblockPersonSender,
   updatePersonReceiver,
-} from "./people/person";
+} from "./people/actions";
+import { deletePersonEpic, fetchPeopleListEpic, updatePersonEpic } from "./people/epics";
 import peopleSlice from "./people/slice";
 import sessionSlice from "./session/slice";
 import webSocketMiddleware from "./webSocketMiddleware";
